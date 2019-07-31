@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        ul {
+            width: 300px;
+            padding: 0;
+            display: flex;
+        }
+
+        div.main-body {
+            display: inline-block;
+            width: 300px;
+            text-align: center;
+            margin-left: 40px;
+        }
+
+        div.main-img {
+            position: relative;
+            display: inline-block;
+        }
+
+        div.move-square {
+            width: 150px;
+            height: 150px;
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.4);
+            left: 0;
+            top: 0;
+            display: none;
+        }
+
+        ul li {
+            flex: 1;
+            list-style: none;
+            margin-right: 10px;
+        }
+
+        ul li img,
+        div>img {
+            width: 100%;
+        }
+
+        .magnifier-img {
+            display: inline-block;
+            border: 1px solid #000;
+            width: 300px;
+            height: 300px;
+            vertical-align: top;
+            margin-top: 30px;
+            background-repeat: no-repeat;
+            /* background-position: 0 100%; */
+            /* background-image: url('./3.jpg'); */
+            background-size: 200% 200%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-body">
+        <div class="main-img" onmousemove="bottomMove(event)">
+            <img src="./3.jpg" alt="" id="active-img">
+            <div class="move-square"></div>
+        </div>
+        <ul onclick="changeActiveImg(event)" class="img-list">
+            <li><img src="./3.jpg" alt="" class="active"></li>
+            <li><img src="./4.jpg" alt=""></li>
+            <li><img src="./5.jpg" alt=""></li>
+            <li><img src="./6.jpg" alt=""></li>
+        </ul>
+    </div>
+    <div class="magnifier-img"></div>
+</body>
+<script>
+    var borderSquare = (document.getElementsByClassName('main-img'))[0];
+    var showArea = (document.getElementsByClassName('magnifier-img'))[0];
+    var smallSquare = (document.getElementsByClassName('move-square'))[0];
+    var activeImg = document.getElementById('active-img');
+    showArea.style.backgroundImage = 'url(' + activeImg.src + ')';
+    // console.log(activeImg.src)
+
+
+    function bottomMove(event) {//放大镜
+        smallSquare.style.display = 'block';
+
+        var borderWidth = borderSquare.getBoundingClientRect().width;
+        var borderHeight = borderSquare.getBoundingClientRect().height;
+        var borderLeft = borderSquare.getBoundingClientRect().left;
+        var borderTop = borderSquare.getBoundingClientRect().top;
+
+        var smallWidth = smallSquare.getBoundingClientRect().width;
+        var smallHeight = smallSquare.getBoundingClientRect().height;
+        if ((event.x - borderLeft) < (smallWidth / 2) && (event.y - borderTop) < (smallHeight / 2)) {//左上角 x小于 y小于
+            // console.log('x小于 y小于', event);
+            smallSquare.style.right = 'unset';
+            smallSquare.style.bottom = 'unset';
+            smallSquare.style.left = 0;
+            smallSquare.style.top = 0;
+        } else if ((event.x - borderLeft) < (smallWidth / 2) && (event.y - borderTop) > (smallHeight / 2) && (borderHeight + borderTop - event.y) > (smallHeight / 2)) {//左边 x小于 y小于
+            // console.log('x小于 y小于', event);
+            smallSquare.style.right = 'unset';
+            smallSquare.style.bottom = 'unset';
+            smallSquare.style.left = 0;
+            smallSquare.style.top = (event.y - borderTop - (smallHeight / 2)) + 'px';
+        } else if ((event.x - borderLeft) < (smallWidth / 2) && (event.y - borderTop) > (smallHeight / 2) && (borderHeight + borderTop - event.y) < (smallHeight / 2)) {//左下边 x小于 y小于
+            // console.log('x小于 y小于', event);
+            smallSquare.style.right = 'unset';
+            smallSquare.style.top = 'unset';
+            smallSquare.style.left = 0;
+            smallSquare.style.bottom = 0;
+        } else if ((event.x - borderLeft) > (smallWidth / 2) && (borderWidth + borderLeft - event.x) > (smallWidth / 2) && (event.y - borderTop) < (smallHeight / 2)) {//中上方 x 大于 y小于
+            // console.log('x 大于 y小于', event);
+            smallSquare.style.right = 'unset';
+            smallSquare.style.bottom = 'unset';
+            smallSquare.style.left = (event.x - borderLeft - (smallWidth / 2)) + 'px';
+            smallSquare.style.top = 0;
+        } else if ((event.x - borderLeft) > (smallWidth / 2) && (borderWidth + borderLeft - event.x) < (smallWidth / 2) && (event.y - borderTop) < (smallHeight / 2)) {//右上方 x 大于 y小于
+            // console.log('x 大于 y小于', event);
+            smallSquare.style.left = 'unset';
+            smallSquare.style.bottom = 'unset';
+            smallSquare.style.right = 0;
+            smallSquare.style.top = 0;
+        } else if ((event.x - borderLeft) > (smallWidth / 2) && (borderWidth + borderLeft - event.x) < (smallWidth / 2) && (event.y - borderTop) > (smallHeight / 2) && (borderHeight + borderTop - event.y) > (smallHeight / 2)) {//右边 x 大于 y小于
+            // console.log('x 大于 y小于', event);
+            smallSquare.style.left = 'unset';
+            smallSquare.style.bottom = 'unset';
+            smallSquare.style.right = 0;
+            smallSquare.style.top = (event.y - borderTop - (smallHeight / 2)) + 'px';
+        } else if ((event.x - borderLeft) > (smallWidth / 2) && (borderWidth + borderLeft - event.x) < (smallWidth / 2) && (event.y - borderTop) > (smallHeight / 2) && (borderHeight + borderTop - event.y) < (smallHeight / 2)) {//右下边 x 大于 y小于
+            // console.log('右下边', event);
+            smallSquare.style.left = 'unset';
+            smallSquare.style.top = 'unset';
+            smallSquare.style.right = 0;
+            smallSquare.style.bottom = 0;
+        } else if ((event.x - borderLeft) > (smallWidth / 2) && (borderWidth + borderLeft - event.x) > (smallWidth / 2) && (event.y - borderTop) > (smallHeight / 2) && (borderHeight + borderTop - event.y) > (smallHeight / 2)) {//中间 x 大于 y大于
+            // console.log('x 大于 y大于', event);
+            smallSquare.style.right = 'unset';
+            smallSquare.style.bottom = 'unset';
+            smallSquare.style.left = (event.x - borderLeft - (smallWidth / 2)) + 'px';
+            smallSquare.style.top = (event.y - borderTop - (smallHeight / 2)) + 'px';
+        } else if ((event.x - borderLeft) > (smallWidth / 2) && (borderWidth + borderLeft - event.x) > (smallWidth / 2) && (event.y - borderTop) > (smallHeight / 2) && (borderHeight + borderTop - event.y) < (smallHeight / 2)) {// 中下
+            smallSquare.style.right = 'unset';
+            smallSquare.style.top = 'unset';
+            smallSquare.style.left = (event.x - borderLeft - (smallWidth / 2)) + 'px';
+            smallSquare.style.bottom = 0;
+        }
+        // console.log(smallSquare.getBoundingClientRect().left - borderLeft, smallSquare.getBoundingClientRect().top - borderTop);
+        showArea.style.backgroundPositionX = ((smallSquare.getBoundingClientRect().left - borderLeft) / borderWidth) * 100 + '%';
+        if ((event.x - borderLeft) < (smallWidth / 2)) {
+            showArea.style.backgroundPositionX = ((smallSquare.getBoundingClientRect().left - borderLeft) / borderWidth) * 100 + '%';
+        } else {
+            showArea.style.backgroundPositionX = ((smallSquare.getBoundingClientRect().left - borderLeft + smallWidth) / borderWidth) * 100 + '%';
+        }
+
+        if ((event.y - borderTop) < (smallHeight / 2)) {//
+            showArea.style.backgroundPositionY = ((smallSquare.getBoundingClientRect().top - borderTop) / borderHeight) * 100 + '%';
+        } else {
+            showArea.style.backgroundPositionY = ((smallSquare.getBoundingClientRect().top - borderTop + smallHeight) / borderHeight) * 100 + '%';
+        }
+    }
+
+
+    function changeActiveImg(event) {//切换图片
+        if (event.target.tagName.toLowerCase() === 'img' && !(/active/).test(event.target.classList.value)) {
+            var children = document.getElementsByClassName('img-list')[0].children;
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].children[0].nodeName.toLowerCase() === 'img' && (/active/).test(children[i].children[0].classList.value)) {
+                    children[i].children[0].classList.remove('active');
+                }
+            }
+            // console.log(event);
+            event.target.classList.add('active');
+            activeImg.src = event.target.src;
+            showArea.style.backgroundImage = 'url(' + activeImg.src + ')';
+
+        }
+    }
+</script>
+
+</html>
